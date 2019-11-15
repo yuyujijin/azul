@@ -17,7 +17,7 @@ public class Board {
 		}
 		
 		for (int i=0; i<patternLine.length; i++) {
-			for (int j=0; j<i; j++) {
+			for (int j=0; j<=i; j++) {
 				patternLine[i][j] = new Square();
 			}
 		}
