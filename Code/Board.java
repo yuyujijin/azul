@@ -7,7 +7,7 @@ public class Board {
 	
     /**
      * Constructor to initialize the board
-     * /
+     **/
 	public Board() {
 		score=0;
 		for (int i=0; i<wall.length; i++) {
@@ -29,5 +29,5 @@ public class Board {
 	
 	/**
 	 * Add the needed methods
-	 */
+	 **/
 }
