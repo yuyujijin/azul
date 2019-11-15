@@ -5,7 +5,9 @@ public class Board {
 	public Square [][] patternLine = new Square [5][];
 	public Square [] floor = new Square [7];
 	
-
+    /**
+     * Constructor to initialize the board
+     * /
 	public Board() {
 		score=0;
 		for (int i=0; i<wall.length; i++) {
@@ -24,4 +26,8 @@ public class Board {
 				floor[i] = new Square();
 			}
 	}
+	
+	/**
+	 * Add the needed methods
+	 */
 }
