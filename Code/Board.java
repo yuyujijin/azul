@@ -1,3 +1,4 @@
+
 public class Board {
 
 	public int score;
@@ -5,9 +6,9 @@ public class Board {
 	public Square [][] patternLine = new Square [5][];
 	public Square [] floor = new Square [7];
 	
-    /**
-     * Constructor to initialize the board
-     **/
+	/** 
+	 * Constructor for board
+	 */
 	public Board() {
 		score=0;
 		for (int i=0; i<wall.length; i++) {
@@ -28,6 +29,17 @@ public class Board {
 	}
 	
 	/**
-	 * Add the needed methods
-	 **/
+	 * checks if a wall's line is full
+	 * @return true is one line is full, false otherwise
+	 */
+	public boolean isWallLineFull() {
+		for (int i=0; i<wall.length; i++) {
+			int c=0;
+			for (int j=0; j<wall[i].length; j++) {
+				if (!wall[i][j].isEmpty()) c=c+1;
+			}
+			if (c==5) return true;
+		}
+		return false;
+	}
 }
