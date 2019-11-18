@@ -2,7 +2,7 @@ public class wallSquare extends Square{
   private boolean activated;
 
   public wallSquare(Tile t){
-    super;
+    super();
     add(t);
     activated = false;
   }
