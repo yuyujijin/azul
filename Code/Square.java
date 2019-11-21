@@ -17,4 +17,9 @@ public class Square{
 	public boolean isEmpty(){
 		return(t==null);
 	}
+	
+	public char getColor() {
+		return t.getColor();
+	}
+	
 }
