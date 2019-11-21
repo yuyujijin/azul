@@ -1,19 +1,20 @@
 public class Square{
-  private Tile t;
+	
+	private Tile t;
 
-  public Square(){
-    t = null;
-  }
+	public Square(){
+		t = null;
+	}
 
-  public add(Tile t){
-    this.t = t;
-  }
+	public void add(Tile t){
+		this.t = t;
+	}
 
-  public remove(){
-    t = null;
-  }
+	public void remove(){
+		t = null;
+	}
 
-  public boolean isEmpty(){
-    return(t==null);
-  }
+	public boolean isEmpty(){
+		return(t==null);
+	}
 }
