@@ -1,4 +1,3 @@
-
 public class Board {
 
 	public int score;
@@ -41,5 +40,43 @@ public class Board {
 			if (c==5) return true;
 		}
 		return false;
+	}
+	
+	// if the floor is full, return true, else return false
+	public boolean isFloorFull() {
+		for (int i=0; i<floor.length; i++) {
+			if (floor[i].isEmpty()) return false;
+		}
+		return true;
+	}
+	
+	// if the indexed patternLine's line is full, return true, else return false
+	public boolean isPatternLineFull(int index) {
+		for (int i=0; i<patternLine.length; i++) {
+			if (patternLine[index][i].isEmpty()) return false;
+		}
+		return true;
+	}
+	
+    //	public boolean addLines(Tile [] t, int index) { } 
+	
+	/*
+	 * checks if the indexed line's color is already used (on the wall)
+	 * if so, we can't add tile with this color at the same patternLine's line
+	 */
+	public boolean isActivated(char color, int index) {
+		for (int i=0; i<wall.length; i++) {
+			if (wall[index][i].getColor()==color) return true;
+		}
+		return false;
+	}
+	
+	// add tile to the floor when there's too much tile in the patternline
+	public void addFloor(Tile[] t) {
+		
+	}
+		
+	// 
+	public void refillBag() {
 	}
 }
