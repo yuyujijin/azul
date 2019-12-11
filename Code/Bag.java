@@ -2,7 +2,7 @@
 import java.util.*;
 
 public class Bag{
-  
+
 	private ArrayList<Tile> pieces;
 
     public Bag(){
@@ -37,5 +37,11 @@ public class Bag{
     		return pieces.remove(0);
     	}
     	return null;
+    }
+
+    public void refile(Tile[] ts){
+      if(isEmpty()){
+        for(Tile t : ts) pieces.add(t);
+      }
     }
 }

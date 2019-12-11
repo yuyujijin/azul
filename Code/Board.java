@@ -4,8 +4,8 @@ public class Board {
 	public Square [][] wall = new Square [5][5];
 	public Square [][] patternLine = new Square [5][];
 	public Square [] floor = new Square [7];
-	
-	/** 
+
+	/**
 	 * Constructor for board
 	 */
 	public Board() {
@@ -15,18 +15,18 @@ public class Board {
 				wall[i][j] = new Square();
 			}
 		}
-		
+
 		for (int i=0; i<patternLine.length; i++) {
 			for (int j=0; j<=i; j++) {
 				patternLine[i][j] = new Square();
 			}
 		}
-		
+
 		for (int i=0; i<wall.length; i++) {
 				floor[i] = new Square();
 			}
 	}
-	
+
 	/**
 	 * checks if a wall's line is full
 	 * @return true is one line is full, false otherwise
@@ -41,7 +41,7 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	// if the floor is full, return true, else return false
 	public boolean isFloorFull() {
 		for (int i=0; i<floor.length; i++) {
@@ -49,7 +49,7 @@ public class Board {
 		}
 		return true;
 	}
-	
+
 	// if the indexed patternLine's line is full, return true, else return false
 	public boolean isPatternLineFull(int index) {
 		for (int i=0; i<patternLine.length; i++) {
@@ -57,9 +57,9 @@ public class Board {
 		}
 		return true;
 	}
-	
-    //	public boolean addLines(Tile [] t, int index) { } 
-	
+
+    //	public boolean addLines(Tile [] t, int index) { }
+
 	/*
 	 * checks if the indexed line's color is already used (on the wall)
 	 * if so, we can't add tile with this color at the same patternLine's line
@@ -70,13 +70,13 @@ public class Board {
 		}
 		return false;
 	}
-	
+
 	// add tile to the floor when there's too much tile in the patternline
 	public void addFloor(Tile[] t) {
-		
+
 	}
-		
-	// 
-	public void refillBag() {
+
+	//
+	public void refillDiscards() {
 	}
 }
