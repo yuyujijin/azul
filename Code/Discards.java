@@ -13,12 +13,12 @@ public class Discards extends Bag{
   }
 
   public Tile[] empty(){
-    Tile[] ts = pieces.toArray();
+    Tile[] ts = (Tile[]) pieces.toArray();
     pieces.clear();
     return ts;
   }
 
-  public void isEmpty(){
+  public boolean isEmpty(){
     return pieces.isEmpty();
   }
 }

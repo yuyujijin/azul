@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Bag{
 
-	private ArrayList<Tile> pieces;
+	protected ArrayList<Tile> pieces;
 
     public Bag(){
     	ArrayList<Tile> p = new ArrayList<Tile>(100);
