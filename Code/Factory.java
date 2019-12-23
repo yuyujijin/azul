@@ -1,4 +1,5 @@
 public class Factory{
+  
   ArrayList<Tile> tiles;
 
   public Factory(){

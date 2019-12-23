@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Discards extends Bag{
+  
   public Discards(){
     pieces = new ArrayList<Tile>();
   }
