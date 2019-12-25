@@ -1,18 +1,19 @@
-public class WallSquare extends Square{
-	
+
+public class WallSquare extends Square {
+
 	private boolean activated;
 
-	public WallSquare(Tile t){
+	public WallSquare(Tile t) {
 		super();
 		add(t);
 		activated = false;
 	}
 
-	public void activate(){
+	public void activate() {
 		activated = true;
 	}
 
-	public boolean isActivated(){
+	public boolean isActivated() {
 		return activated;
 	}
 
