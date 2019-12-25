@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Board {
 
@@ -5,11 +6,14 @@ public class Board {
 	public Square[][] wall = new Square[5][5];
 	public Square[][] patternLine = new Square[5][];
 	public Square[] floor = new Square[7];
+	int floorIndex = 0;
+	Discards discard;
 
 	/**
 	 * Constructor for board
 	 */
-	public Board() {
+	public Board(Discards d) {
+		discard = d;
 		score = 0;
 		for (int i = 0; i < wall.length; i++) {
 			for (int j = 0; j < wall.length; j++) {
@@ -18,12 +22,13 @@ public class Board {
 		}
 
 		for (int i = 0; i < patternLine.length; i++) {
+			patternLine[i] = new Square[i + 1];
 			for (int j = 0; j <= i; j++) {
 				patternLine[i][j] = new Square();
 			}
 		}
 
-		for (int i = 0; i < wall.length; i++) {
+		for (int i = 0; i < floor.length; i++) {
 			floor[i] = new Square();
 		}
 	}
@@ -79,16 +84,37 @@ public class Board {
 
 	// if the indexed patternLine's line is full, return true, else return false
 	public boolean isPatternLineFull(int index) {
-		for (int i = 0; i < patternLine.length; i++) {
+		for (int i = 0; i < patternLine[index].length; i++) {
 			if (patternLine[index][i].isEmpty())
 				return false;
 		}
 		return true;
 	}
 
-	public boolean addLines(Tile[] t, int index) {
-		boolean a = false;
-		return a;
+	public boolean isPatternAddable(int index, char c) {
+		if (patternLine[index][0].isEmpty())
+			return true;
+		if (patternLine[index][0].getColor() != c)
+			return false;
+		return true;
+	}
+
+	public boolean isWallColor(int index, char c) {
+		if (wall[index][0].isEmpty())
+			return false; // a changer
+		if (wall[index][0].getColor() == c)
+			return true;
+		return false;
+
+	}
+
+	public boolean canAddPattern(int index, int taille) {
+		int count = 0;
+		for (int i = 0; i < patternLine[index].length; i++) {
+			if (patternLine[index][i].isEmpty())
+				count++;
+		}
+		return count <= taille;
 	}
 
 	/*
@@ -96,37 +122,84 @@ public class Board {
 	 * can't add tile with this color at the same patternLine's line
 	 */
 	public boolean isActivated(char color, int index) {
-		boolean activated = false;
 		for (int i = 0; i < wall.length; i++) {
 			if (wall[index][i].getColor() == color)
-				activated = true;
+				return true;
 		}
-		return activated;
+		return false;
 	}
 
 	// add tile to the floor when there's too much tile in the patternline
-	public void addFloor(Tile[] t) {
 
+	public void addFloor(Tile[] t) {
+		ArrayList<Tile> al = new ArrayList<Tile>();
+		for (Tile ts : t) {
+			al.add(ts);
+		}
+		for (int i = floorIndex; i < floor.length - floorIndex; i++) {
+			if (al.size() > 0)
+				floor[i].add(al.remove(0));
+		}
+		if (al.size() > 0) {
+			Tile[] disc = new Tile[al.size()];
+			for (int i = 0; i < al.size(); i++)
+				disc[i] = al.remove(0);
+			refillDiscards(disc);
+		}
+	}
+
+	public void addPattern(Tile[] t, int index) {
+		ArrayList<Tile> al = new ArrayList<Tile>();
+		for (Tile ts : t) {
+			al.add(ts);
+		}
+		for (int i = 0; i < patternLine[index].length; i++) {
+			if (patternLine[index][i].isEmpty() && al.size() > 0)
+				patternLine[index][i].add(al.remove(0));
+		}
+		if (al.size() > 0) {
+			Tile[] treturn = new Tile[al.size()];
+			int i = 0;
+			for (Tile tx : al) {
+				treturn[i] = tx;
+				i++;
+			}
+			addFloor(treturn);
+		}
 	}
 
 	//
-	public void refillBag() {
+	public void refillDiscards(Tile[] t) {
+		discard.add(t);
 	}
 
-	// add a square to the wall if the wall line is full
-	public void AddToWall() {
-		for (int i = 0; i < patternLine.length; i++) {
-			if (isPatternLineFull(i) == true) {
-				/*
-				 * ajouter la tuile sur la case de la couleur correspondante peut etre qu'il
-				 * faut définir chaque couleur de chaque case du mur ? score=score+1;
-				 * countHorizontalAdja(); countVerticalAdja();
-				 */
+	public void boardDisplay() {
+		for (int i = 0; i < 5; i++) {
+			for (int l = 0; l < 12 - 3 * i; l++)
+				System.out.print(" ");
+			for (int j = 0; j < patternLine[i].length; j++) {
+				char c = ' ';
+				if (!patternLine[i][j].isEmpty())
+					c = patternLine[i][j].getColor();
+				System.out.print("[" + c + "]");
 			}
+			System.out.print(" | ");
+			for (int k = 0; k < wall[i].length; k++) {
+				char c = ' ';
+				if (!wall[i][k].isEmpty())
+					c = wall[i][k].getColor();
+				System.out.print("[" + c + "]");
+			}
+			System.out.println();
 		}
-		/*
-		 * ajouter le reste à la défausse
-		 */
+		System.out.println();
+		for (int m = 0; m < floor.length; m++) {
+			char c = ' ';
+			if (!floor[m].isEmpty())
+				c = floor[m].getColor();
+			System.out.print("[" + c + "]");
+		}
+		System.out.println();
 	}
 
 	// cound the score from floor
@@ -194,4 +267,5 @@ public class Board {
 				score = score + 10;
 		}
 	}
+
 }
