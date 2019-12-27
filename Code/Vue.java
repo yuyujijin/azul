@@ -16,6 +16,7 @@ public class Vue extends JFrame {
 		pack();
 		setVisible(true);
 		this.setContentPane(new Panneau());
-
+		this.setBackground(Color.LIGHT_GRAY);
+		
 	}
 }
