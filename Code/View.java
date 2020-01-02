@@ -8,38 +8,41 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class View extends JFrame {
-	Controleur control;
+	/* our controllerler */
+	Controller controller;
+	/* container for boards */
 	JPanel board;
 	viewBoard[] boards;
+	/* container for factories */
 	JPanel factory;
 	JPanel[] factories;
 	Center center;
 	Hand hand;
+	/* Color used */
 	Color BACKGROUND_COLOR;
 	Color TEXT_COLOR;
 	Color BUTTON_COLOR;
 
-	public View(Controleur c, int length, int height) {
+	public View(Controller c, int length, int height) {
 		super("Azul");
 		BACKGROUND_COLOR = new Color(245,245,245);
 		TEXT_COLOR = Color.BLACK;
 		BUTTON_COLOR = new Color(210,220,230);
-		control = c;
+		controller = c;
 		setSize(length, height);
-		/* temp */
-		int playersNbr = control.getPlayersNbr();
-		int factoriesNbr = control.getFactoriesNbr();
-		/* */
+
+		int playersNbr = controller.getPlayersNbr();
+		int factoriesNbr = controller.getFactoriesNbr();
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setLayout(new GridBagLayout());
 
-		hand = new Hand();
+		/* Creating the constraints, in order to have a vertical display */
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -51,6 +54,7 @@ public class View extends JFrame {
 		gbc.weighty = 1.0;
 
 		/* creating the different parts */
+
 		factory = new JPanel();
 		factory.setBackground(BACKGROUND_COLOR);
 		center = new Center();
@@ -59,6 +63,8 @@ public class View extends JFrame {
 		board.setBackground(BACKGROUND_COLOR);
 		hand = new Hand();
 		hand.setBackground(BACKGROUND_COLOR);
+
+		/* putting the borders */
 
 		factory.setLayout(new FlowLayout());
 		factory.setBorder(createBorder("Factories",TEXT_COLOR));
@@ -78,6 +84,7 @@ public class View extends JFrame {
 			boards[i].setBorder(createBorder("Player " + (i + 1),TEXT_COLOR));
 			board.add(boards[i]);
 		}
+
 		/* adding everyhting */
 		
 		add(factory, gbc);
@@ -87,9 +94,21 @@ public class View extends JFrame {
 		getContentPane().setBackground(BACKGROUND_COLOR);
 	}
 
+	/* opening a showmessagedialog to great the winner :) */
+
 	public void won(int i,int s) {
 		JOptionPane.showMessageDialog(this, "Player " + (i + 1) + " has won with "+s+" points!");
 	}
+
+	/* border method */
+	
+	public TitledBorder createBorder(String s,Color c) {
+		TitledBorder tb = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(TEXT_COLOR), s);
+		tb.setTitleColor(c);
+		return tb;
+	}
+
+	/* Setters */
 
 	public void setFactories(int factoriesNbr) {
 		this.factories = new JPanel[factoriesNbr];
@@ -103,12 +122,6 @@ public class View extends JFrame {
 			this.factory.add(factory);
 		}
 	}
-	
-	public TitledBorder createBorder(String s,Color c) {
-		TitledBorder tb = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(TEXT_COLOR), s);
-		tb.setTitleColor(c);
-		return tb;
-	}
 
 	public void fillFactories(Factory[] f) {
 		int i = 0;
@@ -120,6 +133,8 @@ public class View extends JFrame {
 			i++;
 		}
 	}
+
+	/* Disabler and Enabler */
 
 	public void disableTiles() {
 		for (JPanel j : factories) {
@@ -166,11 +181,12 @@ public class View extends JFrame {
 	}
 
 	public void disableBoards() {
-		// must disable every boards
 		for (int i = 0; i < boards.length; i++) {
 			boards[i].setEnabledModified(false);
 		}
 	}
+
+	/* Updaters */
 
 	public void update() {
 		updateFactories();
@@ -179,7 +195,7 @@ public class View extends JFrame {
 
 	public void updateBoard(int i, Board b) {
 		updateFloor(i, b.getFloor());
-		updateDeco(i, b.getDeco());
+		updatePattern(i, b.getPattern());
 		updateWall(i, b.getWall());
 	}
 
@@ -204,8 +220,8 @@ public class View extends JFrame {
 		}
 	}
 
-	public void updateDeco(int p, Square[][] t) {
-		JButton[][] jb = boards[p].getDecoArray();
+	public void updatePattern(int p, Square[][] t) {
+		JButton[][] jb = boards[p].getPatternArray();
 		for (int i = 0; i < jb.length; i++) {
 			for (int j = 0; j < jb[i].length; j++) {
 				if (!t[i][j].isEmpty()) {
@@ -216,18 +232,6 @@ public class View extends JFrame {
 		}
 		boards[p].revalidate();
 		boards[p].repaint();
-	}
-
-	public void resetDeco(int i) {
-		boards[i].resetDeco();
-		boards[i].revalidate();
-		boards[i].repaint();
-	}
-
-	public void resetFloor(int i) {
-		boards[i].resetFloor();
-		boards[i].revalidate();
-		boards[i].repaint();
 	}
 
 	public void updateWall(int p, Square[][] t) {
@@ -250,14 +254,14 @@ public class View extends JFrame {
 			factories[i].revalidate();
 			factories[i].repaint();
 		}
-		fillFactories(control.getFactories());
+		fillFactories(controller.getFactories());
 	}
 
 	public void updateCenter() {
 		center.removeAll();
 		center.revalidate();
 		center.repaint();
-		ArrayList<Tile> t = control.getCenter();
+		ArrayList<Tile> t = controller.getCenter();
 		for (Tile ts : t) {
 			center.add(new viewTile(ts, -1));
 			center.revalidate();
@@ -269,27 +273,40 @@ public class View extends JFrame {
 		boards[b].updateScore(s);
 	}
 
-	private class Center extends JPanel {
-		ArrayList<Tile> center;
+	/* Resetters */
 
-		public Center() {
-			center = new ArrayList<Tile>();
-			setLayout(new FlowLayout());
-			setBackground(BACKGROUND_COLOR);
-		}
+	public void resetPattern(int i) {
+		boards[i].resetPattern();
+		boards[i].revalidate();
+		boards[i].repaint();
 	}
+
+	public void resetFloor(int i) {
+		boards[i].resetFloor();
+		boards[i].revalidate();
+		boards[i].repaint();
+	}
+
+	/* Our viewFactory */
 
 	private class viewFactory extends JPanel {
 		private Factory f;
 	}
 
+	/* our viewBoard */
+
 	private class viewBoard extends JPanel {
-		private JPanel deco;
-		private JButton[][] decos;
+		/* Container of JButtons for the pattern */
+		private JPanel pattern;
+		private JButton[][] patterns;
+		/* Container of JButtons for the wall */
 		private JPanel wall;
 		private JButton[][] walls;
+		/* Container of JButtons for the floor */
 		private JPanel floor;
 		private JLabel score;
+
+		/* JButtons are in fact viewTile */
 
 		public viewBoard() {
 			setBackground(BACKGROUND_COLOR);
@@ -297,16 +314,23 @@ public class View extends JFrame {
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridx = 0;
 			gbc.gridy = 0;
-			deco = new JPanel(new GridBagLayout());
-			deco.setBackground(BACKGROUND_COLOR);
+			pattern = new JPanel(new GridBagLayout());
+			pattern.setBackground(BACKGROUND_COLOR);
 			GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.LINE_END;
-			decos = new JButton[5][];
+			patterns = new JButton[5][];
+
+			/* Creating a "stair" likes grid, to mimike the patterns
+			* and adding everything into the JPannel and the array 
+			*/
+
 			for (int i = 0; i < 5; i++) {
 				c.gridy = i;
-				decos[i] = new JButton[i + 1];
+				patterns[i] = new JButton[i + 1];
 				for (int j = 0; j < i + 1; j++) {
+
 					// mergin
+
 					final int z = i;
 					c.insets = new Insets(2, 2, 2, 2);
 					c.gridwidth = 1;
@@ -314,17 +338,20 @@ public class View extends JFrame {
 					c.gridx = 5 - j;
 					JButton x = new JButton(" ");
 					x.addActionListener(MouseEvent -> {
-						control.depositeDeco(z);
+						controller.depositepattern(z);
 					});
-					decos[i][j] = x;
-					deco.add(x, c);
+					patterns[i][j] = x;
+					pattern.add(x, c);
 				}
 			}
-			add(deco, gbc);
+			add(pattern, gbc);
 			gbc.gridx = 1;
 			walls = new JButton[5][5];
 			wall = new JPanel(new GridLayout(5, 5, 4, 4));
 			wall.setBackground(BACKGROUND_COLOR);
+
+			/* same with the wall */
+
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
 					JButton x = new JButton();
@@ -339,6 +366,9 @@ public class View extends JFrame {
 			gbc.gridx = 0;
 			floor = new JPanel(new GridLayout(1, 7, 4, 4));
 			floor.setBackground(BACKGROUND_COLOR);
+
+			/* Labelling the point losed, always prevent the customer :) */
+
 			for (int i = 0; i < 7; i++) {
 				String s = "";
 				switch (i) {
@@ -366,7 +396,7 @@ public class View extends JFrame {
 				}
 				JButton x = new JButton(s);
 				x.addActionListener(MouseEvent -> {
-					control.depositeFloor();
+					controller.depositeFloor();
 				});
 				floor.add(x);
 			}
@@ -376,18 +406,22 @@ public class View extends JFrame {
 			add(score);
 		}
 
+		/* in order to update the score field */
+
 		public void updateScore(int s) {
 			score.setText("Score : " + s);
 		}
 
-		public void resetDeco() {
-			deco.removeAll();
+		/* to reset the pattern line */
+
+		public void resetPattern() {
+			pattern.removeAll();
 			GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.LINE_END;
-			decos = new JButton[5][];
+			patterns = new JButton[5][];
 			for (int i = 0; i < 5; i++) {
 				c.gridy = i;
-				decos[i] = new JButton[i + 1];
+				patterns[i] = new JButton[i + 1];
 				for (int j = 0; j < i + 1; j++) {
 					// mergin
 					final int z = i;
@@ -397,13 +431,15 @@ public class View extends JFrame {
 					c.gridx = 5 - j;
 					JButton x = new JButton(" ");
 					x.addActionListener(MouseEvent -> {
-						control.depositeDeco(z);
+						controller.depositePattern(z);
 					});
-					decos[i][j] = x;
-					deco.add(x, c);
+					patterns[i][j] = x;
+					pattern.add(x, c);
 				}
 			}
 		}
+
+		/* resetting and relabeling everything */
 
 		public void resetFloor() {
 			floor.removeAll();
@@ -435,14 +471,16 @@ public class View extends JFrame {
 				}
 				JButton x = new JButton(s);
 				x.addActionListener(MouseEvent -> {
-					control.depositeFloor();
+					controller.depositeFloor();
 				});
 				floor.add(x);
 			}
 		}
 
-		public void setEnabledDeco(boolean b) {
-			Component[] comp = deco.getComponents();
+		/* setEnabled(boolean b), but for Floor and Pattern */
+
+		public void setEnabledPattern(boolean b) {
+			Component[] comp = pattern.getComponents();
 			for (Component component : comp) {
 				if (component instanceof JButton) {
 					if (((JButton) component).getBackground() == new JButton().getBackground()) {
@@ -461,21 +499,25 @@ public class View extends JFrame {
 			}
 		}
 
+		/* Both at the same time ! */
+
 		public void setEnabledModified(boolean b) {
-			setEnabledDeco(b);
+			setEnabledPattern(b);
 			setEnabledFloor(b);
 		}
+
+		/* Getters */
 
 		public JPanel getFloor() {
 			return floor;
 		}
 
-		public JPanel getDeco() {
-			return deco;
+		public JPanel getPattern() {
+			return pattern;
 		}
 
-		public JButton[][] getDecoArray() {
-			return decos;
+		public JButton[][] getPatternArray() {
+			return patterns;
 		}
 
 		public JButton[][] getWallArray() {
@@ -487,15 +529,28 @@ public class View extends JFrame {
 		}
 	}
 
-	public void addHand(ArrayList<Tile> t) {
-		for (Tile ts : t) {
-			hand.add(new viewTile(ts, 0));
+	/* our center class */
+
+	private class Center extends JPanel {
+		ArrayList<Tile> center;
+
+		public Center() {
+			center = new ArrayList<Tile>();
+			setLayout(new FlowLayout());
+			setBackground(BACKGROUND_COLOR);
 		}
 	}
+
+	/* viewTile are extending JButton
+	* their background color are inherited from the tile
+	* they make reference to
+	*/
 
 	private class viewTile extends JButton implements MouseListener {
 		Tile t;
 		int i;
+
+		/*  the integer i makes a reference to the factory containing them, -1 for center */
 
 		public viewTile(Tile t, int i) {
 			this.i = i;
@@ -510,13 +565,15 @@ public class View extends JFrame {
 			System.out.println(t.getColor());
 		}
 
+		/* When clicking on a tile, calls the function corresponding if enabled */
+
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			if (isEnabled()) {
 				if (i != -1) {
-					control.pickTile(t.getColor(), i);
+					controller.pickTile(t.getColor(), i);
 				} else {
-					control.pickTileCenter(t.getColor());
+					controller.pickTileCenter(t.getColor());
 				}
 			}
 		}
@@ -545,6 +602,8 @@ public class View extends JFrame {
 
 		}
 	}
+
+	/* Our hand, which contains an ArrayList of viewTile */
 
 	private class Hand extends JPanel{
 		public ArrayList<viewTile> tiles;
