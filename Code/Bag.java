@@ -5,11 +5,12 @@ public class Bag{
 
 	protected ArrayList<Tile> pieces;
 
+    /**
+     * construcfor for the bag
+     * we add 20 tiles for each color in it
+    **/
     public Bag(){
     	ArrayList<Tile> p = new ArrayList<Tile>(100);
-
-    	//On ajoute les 20 pièces de chaque couleur
-
     	for(int i = 0 ; i < 100 ; i++){
     		if(i<20) p.add(new Tile('r')); //Red
     		if(i>=20 && i<40) p.add(new Tile('b')); //Blue
@@ -20,17 +21,17 @@ public class Bag{
 	    pieces = p;
     }
 
-	//Methode pour mélanger
+	//Shuffle the bag
 	public void shuffle(){
 		Collections.shuffle(pieces);
 	}
 
-    //Methode pour voir si vide
+    //checks if the bag is empty
     public boolean isEmpty(){
     	return pieces.isEmpty();
     }
 
-    //Methode pour prendre une pieces
+    //îck a tile from the bag
     public Tile pick(){
     	if(!pieces.isEmpty()){
     		shuffle();
@@ -39,12 +40,14 @@ public class Bag{
     	return null;
     }
 
-    public void refile(Tile[] ts){
+    // refill the bag 
+    public void refill(Tile[] ts){
       if(isEmpty()){
         for(Tile t : ts) pieces.add(t);
       }
     }
     
+    // getter for the size
     public int getSize() {
     	return pieces.size();
     }
