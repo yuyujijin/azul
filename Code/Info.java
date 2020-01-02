@@ -1,6 +1,8 @@
 
 public class Info {
 
+	// initiating the different variables that will be used in the file
+
 	private String nbPlayers, taille;
 	public static boolean joker;
 	public static int height;
@@ -8,9 +10,11 @@ public class Info {
 	public static int nbGamePlayer;
 	public static String[] sizes = { "1280x720", "1920x1080", "3840x2160" };
 
+	// empty constructor to display informations regarding the game (nb player, size)	
 	public Info() {
 	}
 
+	// second constructor for info
 	public Info(String nbPlayers, String taille, boolean b) {
 		this.nbPlayers = nbPlayers;
 		this.taille = taille;
@@ -18,18 +22,8 @@ public class Info {
 		updateSize();
 	}
 
-	public String toString() {
-		String str;
-		if (this.nbPlayers != null && this.taille != null) {
-			str = "Paramètres choisis : " + "\n";
-			str += "Nombres de joueurs : " + this.nbPlayers + "\n";
-			str += "Hauteur de la fenêtre : " + this.taille + "\n";
-		} else {
-			str = "Aucune information rentrée !";
-		}
-		return str;
-	}
-
+	/** updates the global variable height and length according to the selected game size parameters
+	**/
 	public void updateSize() {
 		if (this.taille.equals(sizes[0])) {
 			height = 720;
@@ -45,22 +39,28 @@ public class Info {
 		}
 	}
 
+	/** updates the global variable nbPlayers according to the selected nbPlayers in the game parameters
+	**/
 	public void updateNbPlayers() {
 		nbGamePlayer = Integer.parseInt(this.nbPlayers);
 	}
 
+	// getter for height
 	public int getHeight() {
 		return height;
 	}
 
+	// getter for length
 	public int getLength() {
 		return length;
 	}
 
+	// getter for the nb of players
 	public int getNbPlayer() {
 		return Integer.parseInt(nbPlayers);
 	}
 	
+	// getter for the joker
 	public boolean getJoker() {
 		return joker;
 	}
