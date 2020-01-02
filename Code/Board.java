@@ -66,6 +66,7 @@ public class Board {
 		return true;
 	}
 
+    // checks if a pattern can be added to the wall
 	public boolean isPatternAddable(int index, char c) {
 		if (patternLine[index][0].isEmpty())
 			return true;
@@ -84,6 +85,7 @@ public class Board {
 
 	}
 
+    // Checks if a tile can be added to the indexed patterLIne
 	public boolean canAddPattern(int index, int taille) {
 		int count = 0;
 		for (int i = 0; i < patternLine[index].length; i++) {
@@ -93,19 +95,8 @@ public class Board {
 		return count <= taille;
 	}
 
-	// public boolean addLines(Tile [] t, int index) { }
 
-	/*
-	 * checks if the indexed line's color is already used (on the wall) if so, we
-	 * can't add tile with this color at the same patternLine's line
-	 */
-	public boolean isActivated(char color, int index) {
-		for (int i = 0; i < wall.length; i++) {
-			if (wall[index][i].getColor() == color)
-				return true;
-		}
-		return false;
-	}
+
 
 	// add tile to the floor when there's too much tile in the patternline
 
@@ -126,6 +117,7 @@ public class Board {
 		}
 	}
 
+    // add the pattern to the indexed wall's line 
 	public void addPattern(Tile[] t, int index) {
 		ArrayList<Tile> al = new ArrayList<Tile>();
 		for (Tile ts : t) {
@@ -146,15 +138,12 @@ public class Board {
 		}
 	}
 
-	//
+	// refill the discard
 	public void refillDiscards(Tile[] t) {
 		discard.add(t);
 	}
 
-	public void refillDiscards(Tile t) {
-		discard.add(t);
-	}
-
+    // textual dysplay for the board
 	public void boardDisplay() {
 		for (int i = 0; i < 5; i++) {
 			for (int l = 0; l < 12 - 3 * i; l++)
@@ -183,15 +172,19 @@ public class Board {
 		}
 		System.out.println();
 	}
-
+    
+    
+    // getter for the wall
 	public Square[] getFloor() {
 		return floor;
 	}
-
-	public Square[][] getDeco() {
+    
+    // getter for the patten
+	public Square[][] getpattern() {
 		return patternLine;
 	}
 	
+	// getter fir the wall
 	public Square[][] getWall(){
 		return wall;
 	}
@@ -277,6 +270,7 @@ public class Board {
 		return false;
 	}
 
+    // checks if a color is fully completed on the wall
 	public boolean isColorWallFull(char color) {
 		int c = 0;
 		for (int i = 0; i < wall.length; i++) {
@@ -291,6 +285,7 @@ public class Board {
 		return false;
 	}
 
+    // indexes the right color to the right square in the wall
 	public void addWall(int l, Tile t) {
 		/* 0 is blue, 1 yellow, 2 red, 3 black, 4 white */
 		char c = t.getColor();
@@ -316,12 +311,14 @@ public class Board {
 		countPoint(l, j);
 	}
 
+    // counter for points
 	public void countPoint(int l, int c) {
 		score++;
 		countHozirontalAdja(l,c);
 		countVerticalAdja(l,c);
 	}
 	
+	// empty the floor
 	public void emptyFloor() {
 		countFloor();
 		for(int i = 0; i < floor.length; i++) {
@@ -329,6 +326,7 @@ public class Board {
 		}
 	}
 
+    // keep 1 tile from a fully completed patternLine and puts the rest in the discard
 	public Tile emptyPattern(int l) {
 		Tile t = patternLine[l][0].remove();
 		for (int i = 1; i < patternLine[l].length; i++) {
@@ -337,6 +335,7 @@ public class Board {
 		return t;
 	}
 	
+	// getter for the score
 	public int getScore() {
 		return score;
 	}
