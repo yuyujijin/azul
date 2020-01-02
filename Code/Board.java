@@ -40,15 +40,12 @@ public class Board {
 	 */
 	public boolean isWallLineFull() {
 		for (int i = 0; i < wall.length; i++) {
-			int c = 0;
 			for (int j = 0; j < wall[i].length; j++) {
-				if (!wall[i][j].isEmpty())
-					c = c + 1;
+				if (wall[i][j].isEmpty())
+					return false;
 			}
-			if (c == 5)
-				return true;
 		}
-		return false;
+		return true;
 	}
 
 	// if the floor is full, return true, else return false
@@ -76,12 +73,15 @@ public class Board {
 			return false;
 		return true;
 	}
-	
+
 	public boolean isWallColor(int index, char c) {
-		if(wall[index][0].isEmpty()) return false; // a changer
-		if(wall[index][0].getColor() == c) return true;
+		for(int i = 0; i < wall[index].length; i++) {
+			if(!wall[index][i].isEmpty() && wall[index][i].getColor() == c) {
+				return true;
+			}
+		}
 		return false;
-		
+
 	}
 
 	public boolean canAddPattern(int index, int taille) {
@@ -111,15 +111,16 @@ public class Board {
 
 	public void addFloor(Tile[] t) {
 		ArrayList<Tile> al = new ArrayList<Tile>();
-		for(Tile ts : t) {
+		for (Tile ts : t) {
 			al.add(ts);
 		}
-		for(int i = floorIndex; i < floor.length - floorIndex;i++) {
-			if(al.size() > 0) floor[i].add(al.remove(0));
+		for (int i = floorIndex; i < floor.length - floorIndex; i++) {
+			if (al.size() > 0 && floor[i].isEmpty())
+				floor[i].add(al.remove(0));
 		}
-		if(al.size()>0) {
+		if (al.size() > 0) {
 			Tile[] disc = new Tile[al.size()];
-			for(int i = 0; i < al.size();i++)
+			for (int i = 0; i < al.size(); i++)
 				disc[i] = al.remove(0);
 			refillDiscards(disc);
 		}
@@ -127,16 +128,17 @@ public class Board {
 
 	public void addPattern(Tile[] t, int index) {
 		ArrayList<Tile> al = new ArrayList<Tile>();
-		for(Tile ts : t) {
+		for (Tile ts : t) {
 			al.add(ts);
 		}
-		for(int i = 0; i < patternLine[index].length;i++){
-			if(patternLine[index][i].isEmpty() && al.size()>0) patternLine[index][i].add(al.remove(0));
+		for (int i = 0; i < patternLine[index].length; i++) {
+			if (patternLine[index][i].isEmpty() && al.size() > 0)
+				patternLine[index][i].add(al.remove(0));
 		}
-		if(al.size()>0) {
+		if (al.size() > 0) {
 			Tile[] treturn = new Tile[al.size()];
 			int i = 0;
-			for(Tile tx : al) {
+			for (Tile tx : al) {
 				treturn[i] = tx;
 				i++;
 			}
@@ -146,6 +148,10 @@ public class Board {
 
 	//
 	public void refillDiscards(Tile[] t) {
+		discard.add(t);
+	}
+
+	public void refillDiscards(Tile t) {
 		discard.add(t);
 	}
 
@@ -176,5 +182,162 @@ public class Board {
 			System.out.print("[" + c + "]");
 		}
 		System.out.println();
+	}
+
+	public Square[] getFloor() {
+		return floor;
+	}
+
+	public Square[][] getDeco() {
+		return patternLine;
+	}
+	
+	public Square[][] getWall(){
+		return wall;
+	}
+
+	// cound the score from floor
+	public void countFloor() {
+		for (int i = 0; i < floor.length; i++) {
+			if (!floor[i].isEmpty()) {
+				System.out.println(score);
+				if (i == 0 || i == 1)
+					score-=1;
+				if (i == 2 || i == 3 || i == 4)
+					score-=2;
+				if (i == 5 || i == 6)
+					score-=3;
+			}
+		}
+	}
+
+	// uptades score according to horizontal adjacent tiles on the wall
+	public void countHozirontalAdja(int l, int c) {
+		if (c - 1 >= 0 && c + 1 < 5) {
+			if (!wall[l][c - 1].isEmpty())
+				score = score + 1;
+			if (!wall[l][c + 1].isEmpty())
+				score = score + 1;
+		}
+	}
+
+	// uptades score according to vertical adjacent tiles on the wall
+	public void countVerticalAdja(int l, int c) {
+		if (l - 1 >= 0 && l + 1 < 5) {
+			if (!wall[l - 1][c].isEmpty())
+				score = score + 1;
+			if (!wall[l + 1][c].isEmpty())
+				score = score + 1;
+		}
+	}
+
+	// for each wall's line full, gain 2 points
+	public void countWallLineFull(int l) {
+		if (isWallLineFull(l))
+			score = score + 2;
+	}
+
+	// for each wall's collumn full, gain 2 points
+	public void countWallCollumnFull(int c) {
+		if (isWallCollumnFull(c))
+			score = score + 7;
+	}
+
+	public void countWallColorFull() {
+		char[] color = { 'r', 'b', 'y', 'w', 'n' };
+		for (int i = 0; i < color.length; i++) {
+			if (isColorWallFull(color[i]) == true)
+				score = score + 10;
+		}
+	}
+
+	// checks if a wall's line is full
+	public boolean isWallLineFull(int l) {
+		int c = 0;
+		for (int i = 0; i < wall[l].length; i++) {
+			if (!wall[l][i].isEmpty())
+				c = c + 1;
+		}
+		if (c == 5)
+			return true;
+
+		return false;
+	}
+
+	// checks if a wall's collumn is full
+	public boolean isWallCollumnFull(int l) {
+		int c = 0;
+		for (int i = 0; i < wall[l].length; i++) {
+			if (!wall[i][l].isEmpty())
+				c = c + 1;
+		}
+		if (c == 5)
+			return true;
+
+		return false;
+	}
+
+	public boolean isColorWallFull(char color) {
+		int c = 0;
+		for (int i = 0; i < wall.length; i++) {
+			for (int j = 0; j < wall[i].length; j++) {
+				if (wall[i][j].getColor() == color) {
+					c = c + 1;
+				}
+				if (c == 5)
+					return true;
+			}
+		}
+		return false;
+	}
+
+	public void addWall(int l, Tile t) {
+		/* 0 is blue, 1 yellow, 2 red, 3 black, 4 white */
+		char c = t.getColor();
+		int j = 0;
+		switch (c) {
+		case 'b':
+			j = l;
+			break;
+		case 'y':
+			j = (l + 1) % 5;
+			break;
+		case 'r':
+			j = (l + 2) % 5;
+			break;
+		case 'n':
+			j = (l + 3) % 5;
+			break;
+		case 'w':
+			j = (l + 4) % 5;
+			break;
+		}
+		wall[l][j].add(t);
+		countPoint(l, j);
+	}
+
+	public void countPoint(int l, int c) {
+		score++;
+		countHozirontalAdja(l,c);
+		countVerticalAdja(l,c);
+	}
+	
+	public void emptyFloor() {
+		countFloor();
+		for(int i = 0; i < floor.length; i++) {
+			if(!floor[i].isEmpty()) refillDiscards(floor[i].remove());
+		}
+	}
+
+	public Tile emptyPattern(int l) {
+		Tile t = patternLine[l][0].remove();
+		for (int i = 1; i < patternLine[l].length; i++) {
+			if(!patternLine[l][i].isEmpty()) refillDiscards(patternLine[l][i].remove());
+		}
+		return t;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 }

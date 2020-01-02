@@ -51,4 +51,14 @@ public class Player {
 	public char handColor() {
 		return hand.get(0).getColor();
 	}
+	
+	public Tile[] getHand() {
+		Tile[] treturn = new Tile[hand.size()];
+	      int i = 0;
+	      for(Tile t : hand) {
+	    	  treturn[i] = t;
+	    	  i++;
+	      }
+	      return treturn;
+	}
 }

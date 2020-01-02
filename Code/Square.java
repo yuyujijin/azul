@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 public class Square{
 	
 	private Tile t;
@@ -10,8 +12,10 @@ public class Square{
 		this.t = t;
 	}
 
-	public void remove(){
+	public Tile remove(){
+		Tile s = t;
 		t = null;
+		return s;
 	}
 
 	public boolean isEmpty(){
@@ -20,6 +24,10 @@ public class Square{
 	
 	public char getColor() {
 		return t.getColor();
+	}
+	
+	public Color getRGBColor() {
+		return t.getRGBColor();
 	}
 	
 }
