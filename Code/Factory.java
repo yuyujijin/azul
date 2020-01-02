@@ -42,7 +42,7 @@ public class Factory{
     return null;
   }
 
-  
+  // checks is there are still remaining tiles in a factory
   public Tile[] rest(){
     if(!isEmpty()){
     	Tile[] treturn = listToArray(tiles);
@@ -53,6 +53,7 @@ public class Factory{
     return null;
   }
   
+  // transforms a list to an array
   public Tile[] listToArray(ArrayList<Tile> al) {
 	  Tile[] treturn = new Tile[al.size()];
       int i = 0;
