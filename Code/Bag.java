@@ -2,8 +2,8 @@
 import java.util.*;
 
 public class Bag{
-  
-	private ArrayList<Tile> pieces;
+
+	protected ArrayList<Tile> pieces;
 
     public Bag(){
     	ArrayList<Tile> p = new ArrayList<Tile>(100);
@@ -13,7 +13,7 @@ public class Bag{
     	for(int i = 0 ; i < 100 ; i++){
     		if(i<20) p.add(new Tile('r')); //Red
     		if(i>=20 && i<40) p.add(new Tile('b')); //Blue
-    		if(i>=40 && i<60) p.add(new Tile('g')); //Green
+    		if(i>=40 && i<60) p.add(new Tile('y')); //Yellow
     		if(i>=60 && i<80) p.add(new Tile('w')); //White
     		if(i>=80) p.add(new Tile('n')); //Noir
 	    }
@@ -37,5 +37,15 @@ public class Bag{
     		return pieces.remove(0);
     	}
     	return null;
+    }
+
+    public void refile(Tile[] ts){
+      if(isEmpty()){
+        for(Tile t : ts) pieces.add(t);
+      }
+    }
+    
+    public int getSize() {
+    	return pieces.size();
     }
 }
