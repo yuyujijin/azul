@@ -4,22 +4,27 @@ public class Factory{
   
   ArrayList<Tile> tiles;
 
+  // constructor for a factory
   public Factory(){
     tiles = new ArrayList<Tile>();
   }
 
+  // checks if a factory is empty
   public boolean isEmpty(){
     return !(tiles.size() > 0);
   }
   
+  // getter for tiles
   public ArrayList<Tile> getTile(){
 	  return tiles;
   }
 
+  // add tiles in a factory
   public void add(Tile t){
     tiles.add(t);
   }
 
+  // picks a tile from a factory is its not empty, else returns null
   public Tile[] pick(char c){
     if(!isEmpty()){
       ArrayList<Tile> subList = new ArrayList<Tile>();
@@ -37,6 +42,7 @@ public class Factory{
     return null;
   }
 
+  
   public Tile[] rest(){
     if(!isEmpty()){
     	Tile[] treturn = listToArray(tiles);
