@@ -3,7 +3,7 @@
 
 ## What is Azul ?
 
-Azul is a strategic board game made for young people (from age of 8). It can be played with 2,3 or 4 players. 
+Azul is a strategic board game made for young people (from age of 8). It can be played with 2, 3 or 4 players. 
 
 
 ## How does Azul works ?
@@ -14,7 +14,7 @@ The game ends when a player's wall line is full.
 Then, there is a counting for the score, and the players with the best score wins the game.
 
 
-## How Azul is supposed to be used ?
+## How is Azul supposed to be used ?
 
 Just compile the Launcher.java file (javac Launcher.java), in Clisson-Valty/Code/Java, and then run the java file (java Launcher ).
 
