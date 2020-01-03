@@ -1,19 +1,29 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/* this class contains every of the methods to make the game works */
+
 public class Game {
 	Player[] players;
 	ArrayList<Tile> center;
 	Factory[] factories;
 	Bag bag;
 	Discards discards;
-	Controleur controler;
+	Controller controler;
 	int round = 0;
+
+	/* first is the index of the player starting the round */
+
 	int first;
+
+	/* active player is used to check which player is actually playing */
+
 	int activePlayer;
 	public boolean hasWon;
 
-	public Game(int p, Controleur controler, boolean joker) {
+	/* We instantiate every of its attribute */
+
+	public Game(int p, Controller controler, boolean joker) {
 		this.controler = controler;
 		players = new Player[p];
 		discards = new Discards();
@@ -29,27 +39,15 @@ public class Game {
 		hasWon = false;
 	}
 
-	public int getFactoriesNbr() {
-		if (players.length == 2)
-			return 5;
-		if (players.length == 3)
-			return 7;
-		if (players.length == 4)
-			return 9;
-		return -1;
-	}
-
-	public Factory[] getFactories() {
-		return factories;
-	}
-
 	public void phase1() {
+
+		// give random player 1st player tile;
+
 		if (round == 0)
 			first = (int) Math.random() * (players.length+1 - 0);
 		;
 		
 		activePlayer = first;
-		// give random player 1st player tile;
 
 		/* 1st phase */
 
@@ -61,6 +59,8 @@ public class Game {
 			}
 		}
 
+		/* We then fill up every factories */
+
 		for (Factory f : factories) {
 			int i = 0;
 			while (i < 4 && !bag.isEmpty()) {
@@ -69,6 +69,23 @@ public class Game {
 			}
 		}
 	}
+
+	/* This methods now process to do the 3rd phase, which reset everything and count points */
+
+	public void phase3() {
+		for (int i = first; i < players.length + first; i++) {
+			Board b = players[i % players.length].getBoard();
+			for (int j = 0; j < 5; j++) {
+				if (b.isPatternLineFull(j)) {
+					b.addWall(j,b.emptyPattern(j));
+				}
+				if(b.isWallLineFull(j)) hasWon = true;
+			}
+			b.emptyFloor();
+		}
+	}
+	
+	/* This adds the first player tile in the center */
 	
 	public void putFirstPlayerTile() {
 		center.add(new TileFirstPlayer());
@@ -79,15 +96,178 @@ public class Game {
 		center.remove(0); //removing the first player tile
 	}
 
+	/* The active player picks the tiles in argument */
+
 	public void pickPlayer(Tile[] t) {
 		players[activePlayer].pick(t);
-		players[activePlayer].showHand();
 	}
+
+	/* Make the next player plays, % players.length (aka number of players) */
 
 	public void nextPlayer() {
 		activePlayer = (activePlayer + 1) % players.length;
-		textualDisplay();
 	}
+
+	/* Booleans methods */
+
+	/* Check if factories and center are empty, return true if so */
+
+	public boolean canPhase3() {
+		for (Factory f : factories) {
+			if (!f.isEmpty())
+				return false;
+		}
+		if (!center.isEmpty())
+			return false;
+		return true;
+	}
+
+	/* Did somebody won? */
+
+	public boolean hasWon() { return hasWon; }
+
+	/* Check if the active player can put what he has in his hands in the pattern line i
+	* following azul rules
+	*/
+
+	public boolean canAddPattern(int i) {
+		return (players[activePlayer % players.length].getBoard().isPatternAddable(i,
+				players[activePlayer % players.length].handColor())
+				&& !(players[activePlayer % players.length].getBoard().isWallColor(i,
+						players[activePlayer % players.length].handColor())));
+	}
+
+	/* Used in textual mode, to check if you can pick color c in center */
+
+	public boolean centerHasColor(char c) {
+		for (Tile t : center) {
+			if (t.getColor() == c)
+				return true;
+		}
+		return false;
+	}
+
+	/* Same here, with color c and factory i */
+
+	public boolean factoryHasColor(char c, int i) {
+		ArrayList<Tile> factory = factories[i].getTile();
+		for (Tile t : factory) {
+			if (t.getColor() == c)
+				return true;
+		}
+		return false;
+	}
+
+	/* Check if center is empty */
+
+	public boolean centerIsEmpty() {
+		return center.isEmpty();
+	}
+
+	/* Return players[i]'s  score */
+
+	public int getScore(int i) {
+		return players[i].getBoard().getScore();
+	}
+
+	/* Count the score of every players, using the end game count from Azul's rules */
+	
+	public void finalCount() {
+		for(int i = 0; i < players.length; i++) {
+			for(int j = 0 ; j < 5 ;j ++) {
+				players[i].getBoard().countWallCollumnFull(j);
+				players[i].getBoard().countWallLineFull(j);
+			}
+		}
+	}
+
+	/* Check who won (who as the maximum ammount of points) */
+	
+	public int getWinner() {
+		int winner = 0;
+		for(int i = 1 ; i < players.length ; i++) {
+			if(players[i].getBoard().getScore() > players[winner].getBoard().getScore()) winner = i;
+		}
+		return winner;
+	}
+
+	/* Deposit players[i]'s hand in his floor */
+	
+	public void depositFloor(int i) {
+		players[i].addFloor(players[i].emptyHand());
+	}
+
+	/* Deposit players[i]'s hand in his l pattern line */
+
+	public void depositPattern(int i, int l) {
+		players[i % players.length].getBoard().addPattern(players[i % players.length].emptyHand(), l);
+	}
+
+	/* Retturn board of players[i] */
+
+	public Board getBoard(int i) {
+		return players[i].getBoard();
+	}
+
+	/* Used in textual mode, to select a color */
+
+	public char colorPicker() {
+		String c;
+		Scanner color = new Scanner(System.in);
+		c = color.next();
+		while (!c.equals("w") && !c.equals("r") && !c.equals("b") && !c.equals("g") && !c.equals("n")) { // mettre toute
+																											// les
+																											// couleurs
+																											// ici
+			System.out.println("Mauvaise couleur");
+			c = color.next();
+		}
+		return c.charAt(0);
+	}
+
+	/* Used in textual mode, to select a factory */
+
+	public int factoryPicker() {
+		int c;
+		Scanner nbr = new Scanner(System.in);
+		c = Integer.parseInt(nbr.next());
+		while (c < 0 && c > factories.length && !factories[c].isEmpty()) {
+			System.out.println("Fabrique non existante ou vide.");
+			c = Integer.parseInt(nbr.next());
+		}
+		return c;
+	}
+
+	/* Select a color c, and pick every tiles in the center from them and return them */
+
+	public Tile[] pickFromCenter(char c) {
+		ArrayList<Tile> ts = new ArrayList<Tile>();
+		for (int i = 0; i < center.size(); i++) {
+			if (center.get(i).getColor() == c) {
+				ts.add(center.remove(i));
+				i--;
+			}
+		}
+		return ts.toArray(new Tile[ts.size()]);
+	}
+
+	/* Select a color c and a int i, and pick every tiles in the factory i, empty factory and return them */
+
+	public Tile[] pickFromFactory(char c, int i) {
+		Tile[] t = factories[i].pick(c);
+		Tile[] rest = factories[i].rest();
+		addCenter(rest);
+		return t;
+	}
+	public void addCenter(Tile[] t) {
+		if (t.length > 0)
+			for (Tile ts : t) {
+				center.add(ts);
+			}
+	}
+
+
+	/* this method is used to play the game textually, used when firs coding */
 
 	public void textualRound() {
 
@@ -106,122 +286,16 @@ public class Game {
 
 				textualDisplay();
 
-				picking(i);
+				picking(i % (players.length));
 
-				deposite(i);
-				/* if in textual mode : picking(i); */
-
-				// controler.pick(i);
-
+				deposit(i % (players.length));
 			}
 		}
+		
 		phase3();
 	}
 
-	public boolean canPhase3() {
-		for (Factory f : factories) {
-			if (!f.isEmpty())
-				return false;
-		}
-		if (!center.isEmpty())
-			return false;
-		return true;
-	}
-
-	public void phase3() {
-		for (int i = first; i < players.length + first; i++) {
-			Board b = players[i % players.length].getBoard();
-			for (int j = 0; j < 5; j++) {
-				if (b.isPatternLineFull(j)) {
-					b.addWall(j,b.emptyPattern(j));
-				}
-				if(b.isWallLineFull(j)) hasWon = true;
-			}
-			b.emptyFloor();
-		}
-	}
-	
-	public boolean hasWon() { return hasWon; }
-	
-	public void finalCount() {
-		for(int i = 0; i < players.length; i++) {
-			for(int j = 0 ; j < 5 ;j ++) {
-				players[i].getBoard().countWallCollumnFull(j);
-				players[i].getBoard().countWallLineFull(j);
-			}
-		}
-	}
-	
-	public int getWinner() {
-		int winner = 0;
-		for(int i = 1 ; i < players.length ; i++) {
-			if(players[i].getBoard().getScore() > players[winner].getBoard().getScore()) winner = i;
-		}
-		return winner;
-	}
-	
-	public int getScore(int i) {
-		return players[i].getBoard().getScore();
-	}
-	
-	public void depositeFloor(int i) {
-		players[i].addFloor(players[i].emptyHand());
-	}
-
-	public void depositeDeco(int i, int l) {
-		players[i % players.length].getBoard().addPattern(players[i % players.length].emptyHand(), l);
-	}
-
-	public Board getBoard(int i) {
-		return players[i].getBoard();
-	}
-
-	public void deposite(int i) {
-
-		/* Now you got to deposite */
-
-		/* Wall or floor */
-
-		Scanner wf = new Scanner(System.in);
-		System.out.println("Déposer dans la deco 'd' ou le sol 's'?");
-		String ds = wf.next();
-		while (!ds.equals("d") && !ds.equals("s")) {
-			System.out.println("Réponse non valable;");
-			System.out.println("Format : Deco 'd' ou sol 's'");
-			ds = wf.next();
-		}
-		if (ds.equals("s")) {
-			System.out.println("floor");
-			players[i].addFloor(players[i].emptyHand());
-		}
-		if (ds.equals("d")) {
-			/* you must choose a line */
-			int ligne;
-			Scanner l = new Scanner(System.in);
-			System.out.println("Choisir une ligne entre 1 et 5");
-			ligne = Integer.parseInt(l.next());
-			while (!players[i % players.length].getBoard().isPatternAddable(ligne - 1,
-					players[i % players.length].handColor())
-					|| players[i % players.length].getBoard().isWallColor(ligne - 1,
-							players[i % players.length].handColor())) {
-				System.out.println("Ligne invalide");
-				System.out.println("Choisir une nouvelle ligne");
-				ligne = Integer.parseInt(l.next());
-			}
-			players[i % players.length].getBoard().addPattern(players[i % players.length].emptyHand(), ligne - 1);
-		}
-		System.out.print("In your hand : [");
-		players[i % players.length].showHand();
-		System.out.println("]");
-		players[i % players.length].getBoard().boardDisplay();
-	}
-
-	public boolean canAddPattern(int i) {
-		return (players[activePlayer % players.length].getBoard().isPatternAddable(i,
-				players[activePlayer % players.length].handColor())
-				&& !(players[activePlayer % players.length].getBoard().isWallColor(i,
-						players[activePlayer % players.length].handColor())));
-	}
+	/* This methods is used to pick in texutal mode */
 
 	public void picking(int i) {
 		if (!center.isEmpty()) {
@@ -285,76 +359,49 @@ public class Game {
 		}
 	}
 
-	public boolean centerHasColor(char c) {
-		for (Tile t : center) {
-			if (t.getColor() == c)
-				return true;
-		}
-		return false;
-	}
+	/* This methos is used when using the game textually */
 
-	public boolean factoryHasColor(char c, int i) {
-		ArrayList<Tile> factory = factories[i].getTile();
-		for (Tile t : factory) {
-			if (t.getColor() == c)
-				return true;
-		}
-		return false;
-	}
+	public void deposit(int i) {
 
-	public char colorPicker() {
-		String c;
-		Scanner color = new Scanner(System.in);
-		c = color.next();
-		while (!c.equals("w") && !c.equals("r") && !c.equals("b") && !c.equals("g") && !c.equals("n")) { // mettre toute
-																											// les
-																											// couleurs
-																											// ici
-			System.out.println("Mauvaise couleur");
-			c = color.next();
-		}
-		return c.charAt(0);
-	}
+		/* Now you got to deposit */
 
-	public int factoryPicker() {
-		int c;
-		Scanner nbr = new Scanner(System.in);
-		c = Integer.parseInt(nbr.next());
-		while (c < 0 && c > factories.length && !factories[c].isEmpty()) {
-			System.out.println("Fabrique non existante ou vide.");
-			c = Integer.parseInt(nbr.next());
-		}
-		return c;
-	}
+		/* Wall or floor */
 
-	public Tile[] pickFromCenter(char c) {
-		ArrayList<Tile> ts = new ArrayList<Tile>();
-		for (int i = 0; i < center.size(); i++) {
-			if (center.get(i).getColor() == c) {
-				ts.add(center.remove(i));
-				i--;
+		Scanner wf = new Scanner(System.in);
+		System.out.println("Déposer dans la Pattern 'd' ou le sol 's'?");
+		String ds = wf.next();
+		while (!ds.equals("d") && !ds.equals("s")) {
+			System.out.println("Réponse non valable;");
+			System.out.println("Format : Pattern 'd' ou sol 's'");
+			ds = wf.next();
+		}
+		if (ds.equals("s")) {
+			System.out.println("floor");
+			players[i].addFloor(players[i].emptyHand());
+		}
+		if (ds.equals("d")) {
+			/* you must choose a line */
+			int ligne;
+			Scanner l = new Scanner(System.in);
+			System.out.println("Choisir une ligne entre 1 et 5");
+			ligne = Integer.parseInt(l.next());
+			while (!players[i % players.length].getBoard().isPatternAddable(ligne - 1,
+					players[i % players.length].handColor())
+					|| players[i % players.length].getBoard().isWallColor(ligne - 1,
+							players[i % players.length].handColor())) {
+				System.out.println("Ligne invalide");
+				System.out.println("Choisir une nouvelle ligne");
+				ligne = Integer.parseInt(l.next());
 			}
+			players[i % players.length].getBoard().addPattern(players[i % players.length].emptyHand(), ligne - 1);
 		}
-		return ts.toArray(new Tile[ts.size()]);
+		System.out.print("In your hand : [");
+		players[i % players.length].showHand();
+		System.out.println("]");
+		players[i % players.length].getBoard().boardDisplay();
 	}
 
-	public Tile[] pickFromFactory(char c, int i) {
-		Tile[] t = factories[i].pick(c);
-		Tile[] rest = factories[i].rest();
-		addCenter(rest);
-		return t;
-	}
-
-	public boolean centerIsEmpty() {
-		return center.isEmpty();
-	}
-
-	public void addCenter(Tile[] t) {
-		if (t.length > 0)
-			for (Tile ts : t) {
-				center.add(ts);
-			}
-	}
+	/* and this methods prints the state of the actual factories and center */
 
 	public void textualDisplay() {
 		int i = 0;
@@ -372,14 +419,40 @@ public class Game {
 		}
 		System.out.println();
 	}
+
+	/* Getters */
+
+	/* Retturn the numbers of factories we should make */
+
+	public int getFactoriesNbr() {
+		if (players.length == 2)
+			return 5;
+		if (players.length == 3)
+			return 7;
+		if (players.length == 4)
+			return 9;
+		return -1;
+	}
+
+	/* return the factories */
+
+	public Factory[] getFactories() {
+		return factories;
+	}
+
+	/* Return bag's size */
 	
 	public int getBagSize() {
 		return bag.getSize();
 	}
+
+	/* Return discard's size */
 	
 	public int getDiscardSize() {
 		return discards.getSize();
 	}
+
+	/* return hand of the active player */
 	
 	public Tile[] getHand() {
 		return players[activePlayer].getHand();

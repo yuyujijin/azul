@@ -9,7 +9,7 @@ public class Launcher {
 			Info i = s.showInfo();
 			System.out.println(i.getNbPlayer());
 			Controleur c = new Controleur(i.getNbPlayer(),i.getLength(),i.getHeight(),i.getJoker());
-			c.Start();
+			c.round();
 			
 		});
 	}
