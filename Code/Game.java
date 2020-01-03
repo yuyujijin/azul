@@ -46,14 +46,14 @@ public class Game {
 		if (round == 0)
 			first = (int) Math.random() * (players.length+1 - 0);
 		;
-		
+
 		activePlayer = first;
 
 		/* 1st phase */
 
 		if (bag.isEmpty()) {
 			if (!discards.isEmpty()) {
-				bag.refile(discards.empty());
+				bag.refill(discards.empty());
 			} else {
 				// stop the 1st phase
 			}
@@ -84,13 +84,13 @@ public class Game {
 			b.emptyFloor();
 		}
 	}
-	
+
 	/* This adds the first player tile in the center */
-	
+
 	public void putFirstPlayerTile() {
 		center.add(new TileFirstPlayer());
 	}
-	
+
 	public void tileFirstPicked() {
 		first = activePlayer; //player who picked it now becomes the next first player
 		center.remove(0); //removing the first player tile
@@ -171,7 +171,7 @@ public class Game {
 	}
 
 	/* Count the score of every players, using the end game count from Azul's rules */
-	
+
 	public void finalCount() {
 		for(int i = 0; i < players.length; i++) {
 			for(int j = 0 ; j < 5 ;j ++) {
@@ -182,7 +182,7 @@ public class Game {
 	}
 
 	/* Check who won (who as the maximum ammount of points) */
-	
+
 	public int getWinner() {
 		int winner = 0;
 		for(int i = 1 ; i < players.length ; i++) {
@@ -192,7 +192,7 @@ public class Game {
 	}
 
 	/* Deposit players[i]'s hand in his floor */
-	
+
 	public void depositFloor(int i) {
 		players[i].addFloor(players[i].emptyHand());
 	}
@@ -291,7 +291,7 @@ public class Game {
 				deposit(i % (players.length));
 			}
 		}
-		
+
 		phase3();
 	}
 
@@ -441,19 +441,19 @@ public class Game {
 	}
 
 	/* Return bag's size */
-	
+
 	public int getBagSize() {
 		return bag.getSize();
 	}
 
 	/* Return discard's size */
-	
+
 	public int getDiscardSize() {
 		return discards.getSize();
 	}
 
 	/* return hand of the active player */
-	
+
 	public Tile[] getHand() {
 		return players[activePlayer].getHand();
 	}

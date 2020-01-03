@@ -86,7 +86,7 @@ public class View extends JFrame {
 		}
 
 		/* adding everyhting */
-		
+
 		add(factory, gbc);
 		add(center, gbc);
 		add(board, gbc);
@@ -101,7 +101,7 @@ public class View extends JFrame {
 	}
 
 	/* border method */
-	
+
 	public TitledBorder createBorder(String s,Color c) {
 		TitledBorder tb = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(TEXT_COLOR), s);
 		tb.setTitleColor(c);
@@ -212,7 +212,7 @@ public class View extends JFrame {
 		boards[p].revalidate();
 		boards[p].repaint();
 	}
-	
+
 	public void updateHand(Tile[] t) {
 		hand.removeAll();
 		for(Tile ts : t) {
@@ -321,7 +321,7 @@ public class View extends JFrame {
 			patterns = new JButton[5][];
 
 			/* Creating a "stair" likes grid, to mimike the patterns
-			* and adding everything into the JPannel and the array 
+			* and adding everything into the JPannel and the array
 			*/
 
 			for (int i = 0; i < 5; i++) {
@@ -338,7 +338,7 @@ public class View extends JFrame {
 					c.gridx = 5 - j;
 					JButton x = new JButton(" ");
 					x.addActionListener(MouseEvent -> {
-						controller.depositepattern(z);
+						controller.depositPattern(z);
 					});
 					patterns[i][j] = x;
 					pattern.add(x, c);
@@ -396,7 +396,7 @@ public class View extends JFrame {
 				}
 				JButton x = new JButton(s);
 				x.addActionListener(MouseEvent -> {
-					controller.depositeFloor();
+					controller.depositFloor();
 				});
 				floor.add(x);
 			}
@@ -431,7 +431,7 @@ public class View extends JFrame {
 					c.gridx = 5 - j;
 					JButton x = new JButton(" ");
 					x.addActionListener(MouseEvent -> {
-						controller.depositePattern(z);
+						controller.depositPattern(z);
 					});
 					patterns[i][j] = x;
 					pattern.add(x, c);
@@ -471,7 +471,7 @@ public class View extends JFrame {
 				}
 				JButton x = new JButton(s);
 				x.addActionListener(MouseEvent -> {
-					controller.depositeFloor();
+					controller.depositFloor();
 				});
 				floor.add(x);
 			}
@@ -571,7 +571,7 @@ public class View extends JFrame {
 		public void mouseClicked(MouseEvent arg0) {
 			if (isEnabled()) {
 				if (i != -1) {
-					controller.pickTile(t.getColor(), i);
+					controller.pickTileFactory(t.getColor(), i);
 				} else {
 					controller.pickTileCenter(t.getColor());
 				}

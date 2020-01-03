@@ -35,7 +35,7 @@ public class Board {
 
 	/**
 	 * checks if a wall's line is full
-	 * 
+	 *
 	 * @return true is one line is full, false otherwise
 	 */
 	public boolean isWallLineFull() {
@@ -117,7 +117,7 @@ public class Board {
 		}
 	}
 
-    // add the pattern to the indexed wall's line 
+    // add the pattern to the indexed wall's line
 	public void addPattern(Tile[] t, int index) {
 		ArrayList<Tile> al = new ArrayList<Tile>();
 		for (Tile ts : t) {
@@ -140,6 +140,10 @@ public class Board {
 
 	// refill the discard
 	public void refillDiscards(Tile[] t) {
+		discard.add(t);
+	}
+
+	public void refillDiscards(Tile t){
 		discard.add(t);
 	}
 
@@ -172,18 +176,18 @@ public class Board {
 		}
 		System.out.println();
 	}
-    
-    
+
+
     // getter for the wall
 	public Square[] getFloor() {
 		return floor;
 	}
-    
+
     // getter for the patten
-	public Square[][] getpattern() {
+	public Square[][] getPattern() {
 		return patternLine;
 	}
-	
+
 	// getter fir the wall
 	public Square[][] getWall(){
 		return wall;
@@ -317,7 +321,7 @@ public class Board {
 		countHozirontalAdja(l,c);
 		countVerticalAdja(l,c);
 	}
-	
+
 	// empty the floor
 	public void emptyFloor() {
 		countFloor();
@@ -334,7 +338,7 @@ public class Board {
 		}
 		return t;
 	}
-	
+
 	// getter for the score
 	public int getScore() {
 		return score;

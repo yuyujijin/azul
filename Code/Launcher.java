@@ -8,9 +8,9 @@ public class Launcher {
 			Settings s = new Settings();
 			Info i = s.showInfo();
 			System.out.println(i.getNbPlayer());
-			Controleur c = new Controleur(i.getNbPlayer(),i.getLength(),i.getHeight(),i.getJoker());
+			Controller c = new Controller(i.getNbPlayer(),i.getLength(),i.getHeight(),i.getJoker());
 			c.round();
-			
+
 		});
 	}
 
