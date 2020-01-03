@@ -8,9 +8,9 @@ public class Info {
 	public static int height;
 	public static int length;
 	public static int nbGamePlayer;
-	public static String[] sizes = { "1280x720", "1920x1080", "3840x2160" };
+	public static String[] sizes = { "1920x1080", "3840x2160" };
 
-	// empty constructor to display informations regarding the game (nb player, size)	
+	// empty constructor to display informations regarding the game (nb player, size)
 	public Info() {
 	}
 
@@ -26,14 +26,10 @@ public class Info {
 	**/
 	public void updateSize() {
 		if (this.taille.equals(sizes[0])) {
-			height = 720;
-			length = 1280;
-		}
-		if (this.taille.equals(sizes[1])) {
 			height = 1080;
 			length = 1920;
 		}
-		if (this.taille.equals(sizes[2])) {
+		if (this.taille.equals(sizes[1])) {
 			height = 2160;
 			length = 3840;
 		}
@@ -59,7 +55,7 @@ public class Info {
 	public int getNbPlayer() {
 		return Integer.parseInt(nbPlayers);
 	}
-	
+
 	// getter for the joker
 	public boolean getJoker() {
 		return joker;

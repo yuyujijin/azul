@@ -10,13 +10,13 @@ public class Controller {
 		game = new Game(players, this, joker);
 		view = new View(this, length,  height);
 	}
-    
+
     /* Our round method
     *  if game isn't won, we call the phase1, put the 1st player Tile,
     *  set the factories, and call move();
     *  else, we count every points and close the game
     */
-    
+
 	public void round() {
 		if (!game.hasWon()) {
 			game.phase1();
@@ -33,7 +33,7 @@ public class Controller {
 			view.won(game.getWinner(), game.getScore(game.getWinner()));
 		}
 	}
-	
+
 	/* We disable everyboards (not allowing you to deposit)
 	* then check if we cant proceed to phase 3, if so enable Tiles in factories and Center
 	* else, we checks if the game isnt won and if we're in phase 3,
@@ -60,14 +60,14 @@ public class Controller {
 	public void nextPlayer() {
 		game.nextPlayer();
 	}
-	
+
 	/* Picking from a factory */
 
 	public void pickTileFactory(char c, int i) {
 		game.pickPlayer(game.pickFromFactory(c, i));
-		
+
 		/* deactivate every tiles */
-		
+
 		view.disableTiles();
 		view.disableCenter();
 		view.update();
@@ -75,38 +75,40 @@ public class Controller {
 		deposit(getPlayer());
 
 	}
-	
+
 	/* pick from center */
 
 	public void pickTileCenter(char c) {
-	    
+
 	    /* if Tile is first player tile */
-	    
+
 		if (c == 'f') {
 			game.tileFirstPicked();
 			view.update();
+			view.updateBoard(getPlayer(),game.getBoard(getPlayer()));
 			nextPlayer();
 			move();
-			
+
 			/* else */
-			
+
 		} else {
 			game.pickPlayer(game.pickFromCenter(c));
 			view.disableTiles();
 			view.disableCenter();
 			view.update();
+			view.updateBoard(getPlayer(),game.getBoard(getPlayer()));
 			updateHand();
 			deposit(getPlayer());
 		}
 	}
-	
+
 	/* enabling players[i] board, so he can deposit */
 
 	public void deposit(int i) {
 		view.enableBoard(i);
 		view.update();
 	}
-	
+
 	/* depositing on floor */
 
 	public void depositFloor() {
@@ -117,7 +119,7 @@ public class Controller {
 		nextPlayer();
 		move();
 	}
-	
+
 	/* depositing on Pattern */
 
 	public void depositPattern(int i) {
@@ -130,7 +132,7 @@ public class Controller {
 			move();
 		}
 	}
-	
+
 	/* Getters */
 
 	public ArrayList<Tile> getCenter() {
@@ -152,11 +154,11 @@ public class Controller {
 	public int getFactoriesNbr() {
 		return game.factories.length;
 	}
-	
+
 	public Factory[] getFactories() {
 		return game.factories;
 	}
-	
+
 	/* Updaters */
 
 	public void updateBoards() {
@@ -174,7 +176,7 @@ public class Controller {
 			view.updateBoardScore(i, game.players[i].getBoard().getScore());
 		}
 	}
-	
+
 	public void updateHand() {
 		view.updateHand(game.getHand());
 	}

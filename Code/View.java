@@ -204,8 +204,10 @@ public class View extends JFrame {
 		Component[] components = boards[p].getFloor().getComponents();
 		for (Component component : components) {
 			if (component instanceof JButton) {
-				if (!t[i].isEmpty())
-					((JButton) component).setBackground(t[i].getRGBColor());
+				if (!t[i].isEmpty()){
+					((JButton) component).setIcon(t[i].getTile().getImage());
+					((JButton) component).setDisabledIcon(t[i].getTile().getImage());
+				}
 			}
 			i++;
 		}
@@ -225,7 +227,8 @@ public class View extends JFrame {
 		for (int i = 0; i < jb.length; i++) {
 			for (int j = 0; j < jb[i].length; j++) {
 				if (!t[i][j].isEmpty()) {
-					jb[i][j].setBackground(t[i][j].getRGBColor());
+					jb[i][j].setIcon(t[i][j].getTile().getImage());
+					jb[i][j].setDisabledIcon(t[i][j].getTile().getImage());
 					jb[i][j].setEnabled(false);
 				}
 			}
@@ -239,7 +242,8 @@ public class View extends JFrame {
 		for (int i = 0; i < jb.length; i++) {
 			for (int j = 0; j < jb[i].length; j++) {
 				if (!t[i][j].isEmpty()) {
-					jb[i][j].setBackground(t[i][j].getRGBColor());
+					jb[i][j].setIcon(t[i][j].getTile().getImage());
+					jb[i][j].setDisabledIcon(t[i][j].getTile().getImage());
 					jb[i][j].setEnabled(false);
 				}
 			}
@@ -336,10 +340,11 @@ public class View extends JFrame {
 					c.gridwidth = 1;
 					c.gridheight = 1;
 					c.gridx = 5 - j;
-					JButton x = new JButton(" ");
+					JButton x = new JButton(getEmpty());
 					x.addActionListener(MouseEvent -> {
 						controller.depositPattern(z);
 					});
+					x.setPreferredSize(new Dimension(32,32));
 					patterns[i][j] = x;
 					pattern.add(x, c);
 				}
@@ -354,9 +359,11 @@ public class View extends JFrame {
 
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
-					JButton x = new JButton();
-					x.add(new JLabel(" "));
+					JButton x = new JButton(getEmpty());
+					x.setPreferredSize(new Dimension(32,32));
 					x.setEnabled(false);
+					x.setIcon(getWallImage(i,j,"mur"));
+					x.setDisabledIcon(getWallImage(i,j,"mur"));
 					walls[i][j] = x;
 					wall.add(x);
 				}
@@ -394,10 +401,12 @@ public class View extends JFrame {
 					s = "-3";
 					break;
 				}
-				JButton x = new JButton(s);
+				JButton x = new JButton(getEmpty());
+				x.setBorder(createBorder(s,TEXT_COLOR));
 				x.addActionListener(MouseEvent -> {
 					controller.depositFloor();
 				});
+				x.setPreferredSize(new Dimension(32,32));
 				floor.add(x);
 			}
 			add(floor, gbc);
@@ -429,10 +438,11 @@ public class View extends JFrame {
 					c.gridwidth = 1;
 					c.gridheight = 1;
 					c.gridx = 5 - j;
-					JButton x = new JButton(" ");
+					JButton x = new JButton(getEmpty());
 					x.addActionListener(MouseEvent -> {
 						controller.depositPattern(z);
 					});
+					x.setPreferredSize(new Dimension(32,32));
 					patterns[i][j] = x;
 					pattern.add(x, c);
 				}
@@ -469,10 +479,12 @@ public class View extends JFrame {
 					s = "-3";
 					break;
 				}
-				JButton x = new JButton(s);
+				JButton x = new JButton(getEmpty());
+				x.setBorder(createBorder(s,TEXT_COLOR));
 				x.addActionListener(MouseEvent -> {
 					controller.depositFloor();
 				});
+				x.setPreferredSize(new Dimension(32,32));
 				floor.add(x);
 			}
 		}
@@ -549,14 +561,24 @@ public class View extends JFrame {
 	private class viewTile extends JButton implements MouseListener {
 		Tile t;
 		int i;
+		ImageIcon basicColor;
+		ImageIcon hoveredColor;
 
 		/*  the integer i makes a reference to the factory containing them, -1 for center */
 
 		public viewTile(Tile t, int i) {
+			super(t.getImage());
+			setDisabledIcon(t.getImage());
+			basicColor = t.getImage();
+			if(t.getColor() == 'f'){
+				hoveredColor = basicColor;
+			}else{
+				hoveredColor = t.getHoveredImage();
+			}
 			this.i = i;
 			this.t = t;
 			setEnabled(false);
-			setBackground(t.getRGBColor());
+			setPreferredSize(new Dimension(32,32));
 			if(t.getColor() == 'f') add(new JLabel("1st"));
 			addMouseListener(this);
 		}
@@ -580,14 +602,30 @@ public class View extends JFrame {
 
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-
+			Component[] comps;
+			if(i!=-1){
+				comps = factories[i].getComponents();
+			}else{
+				comps = center.getComponents();
+			}
+			for(Component c : comps){
+				if((((viewTile) c)).t.getColor() == t.getColor())
+					((viewTile) c).setIcon(((viewTile) c).hoveredColor);
+			}
 		}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-
+			Component[] comps;
+			if(i!=-1){
+				comps = factories[i].getComponents();
+			}else{
+				comps = center.getComponents();
+			}
+			for(Component c : comps){
+				if((((viewTile) c)).t.getColor() == t.getColor())
+					((viewTile) c).setIcon(((viewTile) c).basicColor);
+			}
 		}
 
 		@Override
@@ -612,5 +650,22 @@ public class View extends JFrame {
 			tiles = new ArrayList<viewTile>();
 			setLayout( new FlowLayout(FlowLayout.LEFT));
 		}
+	}
+
+
+		public ImageIcon getWallImage(int line, int col,String s){
+			if(line==col)
+				return new ImageIcon("ressources/img/"+s+"blue.png");
+			if(line==(col+1)%5)
+				return new ImageIcon("ressources/img/"+s+"white.png");
+			if(line==(col+2)%5)
+				return new ImageIcon("ressources/img/"+s+"black.png");
+			if(line==(col+3)%5)
+				return new ImageIcon("ressources/img/"+s+"red.png");
+			return new ImageIcon("ressources/img/"+s+"yellow.png");
+		}
+
+	public ImageIcon getEmpty(){
+		return new ImageIcon("ressource/img/empty.png");
 	}
 }

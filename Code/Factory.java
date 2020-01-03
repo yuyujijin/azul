@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Factory{
-  
+
   ArrayList<Tile> tiles;
 
   // constructor for a factory
@@ -13,7 +13,7 @@ public class Factory{
   public boolean isEmpty(){
     return !(tiles.size() > 0);
   }
-  
+
   // getter for tiles
   public ArrayList<Tile> getTile(){
 	  return tiles;
@@ -52,7 +52,7 @@ public class Factory{
     System.out.println("No rest to get.");
     return null;
   }
-  
+
   // transforms a list to an array
   public Tile[] listToArray(ArrayList<Tile> al) {
 	  Tile[] treturn = new Tile[al.size()];

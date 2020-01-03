@@ -326,9 +326,15 @@ public class Board {
 	public void emptyFloor() {
 		countFloor();
 		for(int i = 0; i < floor.length; i++) {
-			if(!floor[i].isEmpty()) refillDiscards(floor[i].remove());
+			if(!floor[i].isEmpty()){
+				if(!(floor[i].getTile() instanceof TileFirstPlayer)){
+					 refillDiscards(floor[i].remove());
+			}else{
+				floor[i].remove();
+			}
 		}
 	}
+}
 
     // keep 1 tile from a fully completed patternLine and puts the rest in the discard
 	public Tile emptyPattern(int l) {

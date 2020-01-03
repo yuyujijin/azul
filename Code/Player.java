@@ -47,11 +47,11 @@ public class Player {
 			System.out.print(t.getColor()+",");
 		}
 	}
-	
+
 	public char handColor() {
 		return hand.get(0).getColor();
 	}
-	
+
 	public Tile[] getHand() {
 		Tile[] treturn = new Tile[hand.size()];
 	      int i = 0;

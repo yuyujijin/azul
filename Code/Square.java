@@ -1,8 +1,8 @@
 import java.awt.Color;
 
 public class Square{
-	
-	
+
+
 	private Tile t;
 
 	// constructor for the square
@@ -15,7 +15,7 @@ public class Square{
 		this.t = t;
 	}
 
-	// removes a tile 
+	// removes a tile
 	public Tile remove(){
 		Tile s = t;
 		t = null;
@@ -26,15 +26,19 @@ public class Square{
 	public boolean isEmpty(){
 		return(t==null);
 	}
-	
+
 	// gets the color of a square
 	public char getColor() {
 		return t.getColor();
 	}
-	
+
 	// get the rgb color for the square
 	public Color getRGBColor() {
 		return t.getRGBColor();
 	}
-	
+
+	public Tile getTile(){
+		return t;
+	}
+
 }

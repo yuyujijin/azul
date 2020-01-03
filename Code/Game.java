@@ -11,6 +11,7 @@ public class Game {
 	Discards discards;
 	Controller controler;
 	int round = 0;
+	boolean firstTilePicked;
 
 	/* first is the index of the player starting the round */
 
@@ -37,11 +38,14 @@ public class Game {
 		center = new ArrayList<Tile>();
 		bag = new Bag();
 		hasWon = false;
+		firstTilePicked= false;
 	}
 
 	public void phase1() {
 
 		// give random player 1st player tile;
+
+		firstTilePicked = false;
 
 		if (round == 0)
 			first = (int) Math.random() * (players.length+1 - 0);
@@ -92,8 +96,11 @@ public class Game {
 	}
 
 	public void tileFirstPicked() {
+		firstTilePicked = true;
 		first = activePlayer; //player who picked it now becomes the next first player
-		center.remove(0); //removing the first player tile
+		Tile[] t = new Tile[1];
+		t[0] = center.remove(0);
+		players[activePlayer].addFloor(t); //removing the first player tile
 	}
 
 	/* The active player picks the tiles in argument */
@@ -125,6 +132,8 @@ public class Game {
 	/* Did somebody won? */
 
 	public boolean hasWon() { return hasWon; }
+
+	public boolean firstPicked() { return firstTilePicked; }
 
 	/* Check if the active player can put what he has in his hands in the pattern line i
 	* following azul rules
@@ -241,6 +250,9 @@ public class Game {
 	/* Select a color c, and pick every tiles in the center from them and return them */
 
 	public Tile[] pickFromCenter(char c) {
+		if(!firstPicked()){
+			tileFirstPicked();
+		}
 		ArrayList<Tile> ts = new ArrayList<Tile>();
 		for (int i = 0; i < center.size(); i++) {
 			if (center.get(i).getColor() == c) {
@@ -256,7 +268,7 @@ public class Game {
 	public Tile[] pickFromFactory(char c, int i) {
 		Tile[] t = factories[i].pick(c);
 		Tile[] rest = factories[i].rest();
-		addCenter(rest);
+		if(rest != null && rest.length > 0) addCenter(rest);
 		return t;
 	}
 	public void addCenter(Tile[] t) {

@@ -21,7 +21,7 @@ public class Settings extends JPanel {
 	            null, this, "Azul",
 	                JOptionPane.INFORMATION_MESSAGE);
 		}
-	
+
 	// get informations from the selected parameters (JComboBox)
 	public Info showInfo() {
 		boolean b = joker.isSelected();
@@ -33,7 +33,7 @@ public class Settings extends JPanel {
 	**/
 	private void initComponent() {
 
-		//player pannel 
+		//player pannel
 		JPanel panPlayer = new JPanel();
 		panPlayer.setBackground(Color.white);
 		panPlayer.setPreferredSize(new Dimension(220, 60));
@@ -53,13 +53,12 @@ public class Settings extends JPanel {
 		panTaille.setBorder(BorderFactory.createTitledBorder("Taille :"));
 		// creating the scrolling menu to select the wanted size of the game window
 		taille = new JComboBox();
-		taille.addItem("1280x720");
 		taille.addItem("1920x1080");
 		taille.addItem("3840x2160");
 		tailleLabel = new JLabel("Taille :");
 		panTaille.add(tailleLabel);
 		panTaille.add(taille);
-		
+
 		// pannel for the joker option
 		JPanel panJoker = new JPanel();
 		panTaille.setBackground(Color.white);
