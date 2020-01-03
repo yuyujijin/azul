@@ -16,7 +16,7 @@ Then, there is a counting for the score, and the players with the best score win
 
 ## How Azul is supposed to be used ?
 
-Just compile the Launcher.java file (javac Launcher.java), and then run the java file (java Launcher ).
+Just compile the Launcher.java file (javac Launcher.java), in Clisson-Valty/Code/Java, and then run the java file (java Launcher ).
 
 
 ## File format
