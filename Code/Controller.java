@@ -41,6 +41,7 @@ public class Controller {
 	*/
 
 	public void move() {
+		view.updateBorderActivePlayer(getPlayer());
 		view.update();
 		view.disableBoards();
 		if (!game.canPhase3()) {

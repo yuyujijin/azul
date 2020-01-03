@@ -100,6 +100,13 @@ public class View extends JFrame {
 		JOptionPane.showMessageDialog(this, "Player " + (i + 1) + " has won with "+s+" points!");
 	}
 
+	public void updateBorderActivePlayer(int i){
+		for(int j = 0; j < boards.length;j++){
+			if(i!=j) boards[j].setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(TEXT_COLOR),"Player " + (j + 1)));
+		}
+		boards[i].setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(255,130,146),3),"Player " + (i + 1)));
+	}
+
 	/* border method */
 
 	public TitledBorder createBorder(String s,Color c) {
