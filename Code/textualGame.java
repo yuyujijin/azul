@@ -47,7 +47,7 @@ public class textualGame {
 
 		if (bag.isEmpty()) {
 			if (!discards.isEmpty()) {
-				bag.refile(discards.empty());
+				bag.refill(discards.empty());
 			} else {
 				// stop the 1st phase
 			}
